@@ -17,8 +17,6 @@ before_script:
 
 build:
   stage: build
-  tags:
-    - my-runner
   script:
     - docker build -t $DOCKER_USERNAME/my-k8s-app:$IMAGE_TAG .
     - docker push $DOCKER_USERNAME/my-k8s-app:$IMAGE_TAG
