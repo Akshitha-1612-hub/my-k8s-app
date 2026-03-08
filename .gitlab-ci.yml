@@ -1,0 +1,24 @@
+image: docker:24.0.5
+
+services:
+  - docker:24.0.5-dind
+
+stages:
+  - build
+
+variables:
+  IMAGE_TAG: $CI_PIPELINE_ID
+  DOCKER_DRIVER: overlay2
+  DOCKER_TLS_CERTDIR: ""
+
+before_script:
+  - docker info
+  - echo $DOCKER_PASSWORD | docker login -u $DOCKER_USERNAME --password-stdin
+
+build:
+  stage: build
+  script:
+    - docker build -t $DOCKER_USERNAME/my-k8s-app:$IMAGE_TAG .
+    - docker push $DOCKER_USERNAME/my-k8s-app:$IMAGE_TAG
+    - docker tag $DOCKER_USERNAME/my-k8s-app:$IMAGE_TAG $DOCKER_USERNAME/my-k8s-app:latest
+    - docker push $DOCKER_USERNAME/my-k8s-app:latest
